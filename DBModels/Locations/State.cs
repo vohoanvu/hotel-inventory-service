@@ -9,5 +9,9 @@ namespace ShopifyHotelSourcing.DBModels.Locations
     {
         public string code { get; set; }
         public string name { get; set; }
+
+        //Foreign Key
+        public string countryCode { get; set; }
+        public virtual Country country { get; set; }
     }
 }

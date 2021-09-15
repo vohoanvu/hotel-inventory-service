@@ -9,8 +9,8 @@ namespace ShopifyHotelSourcing.DBModels.Locations
     public class Zone
     {
         public int Id { get; set; }
-        public int ZoneCode { get; set; }
-        public string Name { get; set; }
-        public NameModel Description { get; set; }
+        public int zoneCode { get; set; }
+        public string name { get; set; }
+        public NameModel description { get; set; }
     }
 }

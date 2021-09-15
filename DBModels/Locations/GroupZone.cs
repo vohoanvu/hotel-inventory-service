@@ -9,8 +9,8 @@ namespace ShopifyHotelSourcing.DBModels.Locations
     public class GroupZone
     {
         public int Id { get; set; }
-        public string GroupZoneCode { get; set; }
-        public NameModel Name { get; set; }
-        public virtual List<int> zonesCodes { get; set; }
+        public string groupZoneCode { get; set; }
+        public NameModel name { get; set; }
+        public List<int> zones { get; set; }
     }
 }

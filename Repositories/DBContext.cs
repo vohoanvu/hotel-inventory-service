@@ -22,6 +22,23 @@ namespace ShopifyHotelSourcing.Repositories
         public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<State> States { get; set; }
         public virtual DbSet<Destination> Destinations { get; set; }
-        public virtual DbSet<Hotels> Hotels { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Configure DB relations though fluent API
+            modelBuilder.Entity<Country>()
+                .HasMany(c => c.states)
+                .WithOne(s => s.country)
+                .HasForeignKey(c => c.countryCode);
+
+
+            modelBuilder.Entity<Destination>()
+                .HasOne(d => d.country)
+                .WithMany(c => c.destinations)
+                .HasForeignKey(d => d.countryCode);
+  
+            // Configure zone and groupZone with the purpose of practicing DB Design...
+
+        }
     }
 }

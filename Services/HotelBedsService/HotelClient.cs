@@ -22,8 +22,8 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
     public class HotelClient : IHotelClient
     {
         private const string baseLocationURL = "https://api.test.hotelbeds.com/hotel-content-api/1.0/locations/";
-        private const string countriesPath = "countries?fields=all&language=ENG&from=1&to=254";
-        private const string destinationPath = "destinations?fields=all&countryCodes=MX,US&language=ENG&from=1&to=1000&useSecondaryLanguage=false";
+        private string countriesPath = "countries?fields=all&language=ENG&from=1&to=254";
+        private string destinationPath = "destinations?fields=all&countryCodes={countryCodes}&language=ENG&from=1&to=100&useSecondaryLanguage=false";
         //private readonly HotelApiClient client = new HotelApiClient(new HotelApiVersion(HotelApiVersion.versions.V1_2), "83b3b9be38b90a41243e7bc6c41949b1", "6ba38be92a");
         private HttpClient myClient;
         private const string MyApiKey = "83b3b9be38b90a41243e7bc6c41949b1";
@@ -60,12 +60,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
                 // Parse the response body.
                 //var dataObjects = response.Content.ReadAsAsync<IEnumerable<DataObject>>().Result;
                 var stringResult = response.Content.ReadAsStringAsync().Result;  
-                //responseResults = JsonSerializer.Deserialize<ContentGenericResponse<Country>>(taskResult);
                 responseResults = JsonSerializer.Deserialize<CountriesResponse>(stringResult);
-                /*foreach (var d in responseResults.responsData)
-                {
-                    Debug.WriteLine("{0}", d.code);
-                }*/
             }
             else
             {
@@ -88,12 +83,33 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             return states;
         }
 
-        public List<Destination> FilterDestinationsByCountryAndState(string countryCode, string stateCode)
+        public DestinationsResponse GetDestinations(string countryCodes)
         {
-            var destinations = new List<Destination>();
+            var results = new DestinationsResponse();
+            // prepare for request
+            myClient.BaseAddress = new Uri(baseLocationURL);
+            var MyXSignature = HotelAPIHelpers.GetXSignature(MyApiKey, MySecret);
+            myClient.DefaultRequestHeaders.Add("Api-Key", MyApiKey);
+            myClient.DefaultRequestHeaders.Add("X-Signature", MyXSignature); // brute force for testing
+            myClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
+            myClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json; charset=utf-8");
 
+            var newDestinationPath = destinationPath.Replace("{countryCodes}", countryCodes);
 
-            return destinations;
+            // Making request
+            HttpResponseMessage response = myClient.GetAsync(newDestinationPath).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var stringResult = response.Content.ReadAsStringAsync().Result;
+                results = JsonSerializer.Deserialize<DestinationsResponse>(stringResult);
+            }
+            else
+            {
+                Debug.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
+            }
+            myClient.Dispose();
+
+            return results;
         }
 
         public void ConvertPlaceNametoGeoCoordinates(string placeName)

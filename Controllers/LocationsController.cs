@@ -15,7 +15,7 @@ namespace ShopifyHotelSourcing.Controllers
     [ApiController]
     public class LocationsController : ControllerBase
     {
-        private readonly IHotelClient hotelBedService;
+        private readonly IHotelClient hotelBedService; 
 
         public LocationsController(IHotelClient hotelBedsService)
         {
@@ -26,7 +26,7 @@ namespace ShopifyHotelSourcing.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetCountries()
         {
-            var  hotelBedsCountries = hotelBedService.GetAllCountries();
+            var hotelBedsCountries = hotelBedService.GetAllCountries();
 
             return Ok(hotelBedsCountries);
         }
@@ -34,9 +34,19 @@ namespace ShopifyHotelSourcing.Controllers
         // GET api/<LocationsController>/destinations
         [HttpGet("destinations")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Get(string countryCodes)
+        public IActionResult GetDestinations(string countryCodes)
         {
-            var hotelBedsDestinations = hotelBedService.GetDestinations(countryCodes);
+            var hotelBedsDestinations = new DestinationsResponse();
+            try
+            {
+                hotelBedsDestinations = hotelBedService.GetDestinations(countryCodes);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
+            return Ok(hotelBedsDestinations);  
         }
 
         // POST api/<CountriesController>

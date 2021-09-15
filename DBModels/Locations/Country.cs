@@ -10,12 +10,9 @@ namespace ShopifyHotelSourcing.DBModels.Locations
     {
         public string code { get; set; }
         public string isoCode { get; set; }
-        public Description description { get; set; }
-        public List<State> states { get; set; }
-    }
-
-    public class Description
-    {
-        public string content { get; set; }
+        public NameModel description { get; set; }
+        // Related entity
+        public virtual List<State> states { get; set; }
+        public virtual List<Destination> destinations { get; set; }
     }
 }

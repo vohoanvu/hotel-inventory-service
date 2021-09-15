@@ -7,6 +7,6 @@ namespace ShopifyHotelSourcing.DBModels.Types
 {
     public class NameModel
     {
-        public string Content { get; set; }
+        public string content { get; set; }
     }
 }

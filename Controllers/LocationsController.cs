@@ -15,9 +15,9 @@ namespace ShopifyHotelSourcing.Controllers
     [ApiController]
     public class LocationsController : ControllerBase
     {
-        private readonly IHotelClient hotelBedService; 
+        private readonly IHotelLocationService hotelBedService; 
 
-        public LocationsController(IHotelClient hotelBedsService)
+        public LocationsController(IHotelLocationService hotelBedsService)
         {
             hotelBedService = hotelBedsService;
         }
@@ -46,7 +46,7 @@ namespace ShopifyHotelSourcing.Controllers
                 throw;
             }
             
-            return Ok(hotelBedsDestinations);  
+            return Ok(hotelBedsDestinations);
         }
 
         // POST api/<CountriesController>

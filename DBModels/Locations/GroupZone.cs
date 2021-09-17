@@ -12,5 +12,11 @@ namespace ShopifyHotelSourcing.DBModels.Locations
         public string groupZoneCode { get; set; }
         public NameModel name { get; set; }
         public List<int> zones { get; set; }
+
+        // related entity
+        public string DestinationCode { get; set; }
+        public Destination Destination { get; set; }
+
+        public List<Zone> ZonesList { get; set; }
     }
 }

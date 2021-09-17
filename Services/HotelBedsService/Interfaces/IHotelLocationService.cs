@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ShopifyHotelSourcing.Services.HotelBedsService.Interfaces
 {
-    public interface IHotelClient
+    public interface IHotelLocationService
     {
         CountriesResponse GetAllCountries();
 

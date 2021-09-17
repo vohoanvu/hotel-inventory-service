@@ -19,7 +19,7 @@ using System.Diagnostics;
 
 namespace ShopifyHotelSourcing.Services.HotelBedsService
 {
-    public class HotelClient : IHotelClient
+    public class HotelLocationService : IHotelLocationService
     {
         private const string baseLocationURL = "https://api.test.hotelbeds.com/hotel-content-api/1.0/locations/";
         private string countriesPath = "countries?fields=all&language=ENG&from=1&to=254";
@@ -30,7 +30,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
         private const string MySecret = "6ba38be92a";
         
 
-        public HotelClient(HttpClient yourClient)
+        public HotelLocationService(HttpClient yourClient)
         {
             myClient = yourClient;
             //myClient = new HttpClient(new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip });

@@ -37,8 +37,8 @@ namespace ShopifyHotelSourcing
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ShopifyHotelSourcing", Version = "v1" });
             });
 
-            services.AddTransient<IHotelClient, HotelClient>();
-            services.AddHttpClient<HotelClient>(c => c.BaseAddress = new Uri("https://api.test.hotelbeds.com"));
+            services.AddTransient<IHotelLocationService, HotelLocationService>();
+            services.AddHttpClient<HotelLocationService>(c => c.BaseAddress = new Uri("https://api.test.hotelbeds.com"));
             services.AddDbContext<DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
 

@@ -34,7 +34,7 @@ namespace ShopifyHotelSourcing.Repositories
         public void Update(T entity) => _context.Set<T>().Update(entity);
 
         public async Task<IEnumerable<T>> EntitiesWithEagerLoad(string[] children, Expression<Func<T, bool>>? filter)
-        {
+        { 
             try
             {
                 IQueryable<T> query = _context.Set<T>();

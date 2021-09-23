@@ -16,6 +16,7 @@ using ShopifyHotelSourcing.Repositories;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Diagnostics;
+using ShopifyHotelSourcing.Repositories.Interfaces;
 
 namespace ShopifyHotelSourcing.Services.HotelBedsService
 {
@@ -28,15 +29,17 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
         private HttpClient myClient;
         private const string MyApiKey = "83b3b9be38b90a41243e7bc6c41949b1";
         private const string MySecret = "6ba38be92a";
-        
 
-        public HotelLocationService(HttpClient yourClient)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public HotelLocationService(HttpClient yourClient, IUnitOfWork unitOfWork)
         {
             myClient = yourClient;
             //myClient = new HttpClient(new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip });
+            _unitOfWork = unitOfWork;
         }
 
-        public CountriesResponse GetAllCountries()
+        public CountriesResponse FetchAllCountries()
         {
             var responseResults = new CountriesResponse();
 
@@ -61,6 +64,13 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
                 //var dataObjects = response.Content.ReadAsAsync<IEnumerable<DataObject>>().Result;
                 var stringResult = response.Content.ReadAsStringAsync().Result;  
                 responseResults = JsonSerializer.Deserialize<CountriesResponse>(stringResult);
+                //saving responses into DB
+                _unitOfWork.Countries.AddRange(responseResults.countries);
+                foreach (var country in responseResults.countries)
+                {
+                    _unitOfWork.States.AddRange(country.states);
+                }
+                _unitOfWork.Complete();
             }
             else
             {
@@ -83,7 +93,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             return states;
         }
 
-        public DestinationsResponse GetDestinations(string countryCodes)
+        public DestinationsResponse FetchDestinations(string countryCodes)
         {
             var results = new DestinationsResponse();
             // prepare for request
@@ -102,6 +112,9 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             {
                 var stringResult = response.Content.ReadAsStringAsync().Result;
                 results = JsonSerializer.Deserialize<DestinationsResponse>(stringResult);
+                //saving responses into Postgres DB
+                _unitOfWork.Destinations.AddRange(results.destinations);
+                _unitOfWork.Complete();
             }
             else
             {

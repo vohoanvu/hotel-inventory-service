@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using ShopifyHotelSourcing.Repositories;
+using ShopifyHotelSourcing.Repositories.Interfaces;
 using ShopifyHotelSourcing.Services.HotelBedsService;
 using ShopifyHotelSourcing.Services.HotelBedsService.Interfaces;
 using System;
@@ -37,9 +39,20 @@ namespace ShopifyHotelSourcing
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ShopifyHotelSourcing", Version = "v1" });
             });
 
-            services.AddTransient<IHotelLocationService, HotelLocationService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddHttpClient<HotelLocationService>(c => c.BaseAddress = new Uri("https://api.test.hotelbeds.com"));
-            services.AddDbContext<DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<DBContext>(options => options.UseNpgsql(Configuration.GetConnectionString("PostgreSqlConnectionString")), ServiceLifetime.Singleton);
+
+            services.AddScoped<IHotelLocationService, HotelLocationService>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<IStateRepository, StateRepository>();
+            services.AddScoped<IDestinationRepository, DestinationRepository>();
+            services.AddScoped<IZoneRepository, ZoneRepository>();
+            services.AddScoped<IGroupZoneRepository, GroupZoneRepository>();
+            services.AddScoped<INameModelRepository, NameModelRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

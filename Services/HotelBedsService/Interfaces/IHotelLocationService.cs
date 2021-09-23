@@ -9,9 +9,9 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService.Interfaces
 {
     public interface IHotelLocationService
     {
-        CountriesResponse GetAllCountries();
+        CountriesResponse FetchAllCountries();
 
-        DestinationsResponse GetDestinations(string countryCodes);
+        DestinationsResponse FetchDestinations(string countryCodes);
 
         List<State> GetStatesByCountry(string countryCode);
 

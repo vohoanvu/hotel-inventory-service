@@ -24,9 +24,9 @@ namespace ShopifyHotelSourcing.Controllers
         // GET: api/<LocationsController>/countries
         [HttpGet("countries")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetCountries()
+        public IActionResult FetchCountries()
         {
-            var hotelBedsCountries = hotelBedService.GetAllCountries();
+            var hotelBedsCountries = hotelBedService.FetchAllCountries();
 
             return Ok(hotelBedsCountries);
         }
@@ -39,7 +39,7 @@ namespace ShopifyHotelSourcing.Controllers
             var hotelBedsDestinations = new DestinationsResponse();
             try
             {
-                hotelBedsDestinations = hotelBedService.GetDestinations(countryCodes);
+                hotelBedsDestinations = hotelBedService.FetchDestinations(countryCodes);
             }
             catch (Exception)
             {

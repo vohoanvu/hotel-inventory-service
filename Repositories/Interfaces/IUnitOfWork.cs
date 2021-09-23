@@ -10,10 +10,9 @@ namespace ShopifyHotelSourcing.Repositories.Interfaces
         ICountryRepository Countries { get; }
         IStateRepository States { get; }
         IDestinationRepository Destinations { get; }
-        INameModelRepository NameContents { get; }
         IZoneRepository Zones { get; }
         IGroupZoneRepository GroupZones { get; }
 
-        int Compete();
+        int Complete();
     }
 }

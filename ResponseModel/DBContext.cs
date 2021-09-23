@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ShopifyHotelSourcing.DBModels.Types;
 
 namespace ShopifyHotelSourcing.Repositories
 {
@@ -22,7 +23,7 @@ namespace ShopifyHotelSourcing.Repositories
         public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<State> States { get; set; }
         public virtual DbSet<Destination> Destinations { get; set; }
-
+        public virtual DbSet<NameModel> NameContents { get; set; }
         public virtual DbSet<Zone> Zones { get; set; }
         public virtual DbSet<GroupZone> GroupZones { get; set; }
 
@@ -55,6 +56,8 @@ namespace ShopifyHotelSourcing.Repositories
                 .HasOne(z => z.GroupZone)
                 .WithMany(gz => gz.ZonesList)
                 .HasForeignKey(z => z.GroupZoneID);
+
+            modelBuilder.Entity<NameModel>().HasNoKey();
         }
     }
 }

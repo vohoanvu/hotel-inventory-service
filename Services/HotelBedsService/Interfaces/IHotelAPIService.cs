@@ -7,16 +7,12 @@ using System.Threading.Tasks;
 
 namespace ShopifyHotelSourcing.Services.HotelBedsService.Interfaces
 {
-    public interface IHotelLocationService
+    public interface IHotelAPIService
     {
         CountriesResponse FetchAllCountries();
 
         DestinationsResponse FetchDestinations(string countryCodes);
 
-        List<State> GetStatesByCountry(string countryCode);
-
-        void GetHotelListings();
-
-        void ConvertPlaceNametoGeoCoordinates(string placeName);
+        void FetchHotelListings();
     }
 }

@@ -15,14 +15,14 @@ namespace ShopifyHotelSourcing.Controllers
     [ApiController]
     public class LocationsController : ControllerBase
     {
-        private readonly IHotelLocationService hotelBedService; 
+        private readonly IHotelAPIService hotelBedService; 
 
-        public LocationsController(IHotelLocationService hotelBedsService)
+        public LocationsController(IHotelAPIService hotelBedsService)
         {
             hotelBedService = hotelBedsService;
         }
         // GET: api/<LocationsController>/countries
-        [HttpGet("countries")]
+        [HttpGet("fetch-countries-intoDB")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult FetchCountries()
         {
@@ -32,9 +32,9 @@ namespace ShopifyHotelSourcing.Controllers
         }
 
         // GET api/<LocationsController>/destinations
-        [HttpGet("destinations")]
+        [HttpGet("fetch-destinations-intoDB")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetDestinations(string countryCodes)
+        public IActionResult FetchDestinations(string countryCodes)
         {
             var hotelBedsDestinations = new DestinationsResponse();
             try

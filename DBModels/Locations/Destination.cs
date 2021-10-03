@@ -13,7 +13,6 @@ namespace ShopifyHotelSourcing.DBModels.Locations
         [Key]
         public string code { get; set; }
 
-        [NotMapped]
         public NameModel name { get; set; }
         public string countryCode { get; set; }
         public string isoCode { get; set; }
@@ -21,6 +20,6 @@ namespace ShopifyHotelSourcing.DBModels.Locations
         public List<GroupZone> groupZones { get; set; }
 
         //Foreign Key and Related Entity
-        public Country country { get; set; }
+        public virtual Country country { get; set; }
     }
 }

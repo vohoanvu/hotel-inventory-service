@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <Folder Include="bin\Debug\net5.0\ref\" />
+    <Folder Include="ViewModels\" />
     <Folder Include="Services\ShopifyService\Interfaces\" />
     <Folder Include="ShopifyModels\" />
   </ItemGroup>

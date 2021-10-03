@@ -20,7 +20,7 @@ using ShopifyHotelSourcing.Repositories.Interfaces;
 
 namespace ShopifyHotelSourcing.Services.HotelBedsService
 {
-    public class HotelLocationService : IHotelLocationService
+    public class HotelAPIService : IHotelAPIService
     {
         private const string baseLocationURL = "https://api.test.hotelbeds.com/hotel-content-api/1.0/locations/";
         private string countriesPath = "countries?fields=all&language=ENG&from=1&to=254";
@@ -32,7 +32,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
 
         private readonly IUnitOfWork _unitOfWork;
 
-        public HotelLocationService(HttpClient yourClient, IUnitOfWork unitOfWork)
+        public HotelAPIService(HttpClient yourClient, IUnitOfWork unitOfWork)
         {
             myClient = yourClient;
             //myClient = new HttpClient(new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip });
@@ -46,15 +46,14 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             myClient.BaseAddress = new Uri(baseLocationURL);
             
             //calculate X-Signature
-            var MyXSignature = HotelAPIHelpers.GetXSignature(MyApiKey, MySecret); // this function is buggy, FIXED!
+            var MyXSignature = HotelAPIHelpers.GetXSignature(MyApiKey, MySecret);
             // Add an Accept header for JSON format.
             //myClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             //myClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
             myClient.DefaultRequestHeaders.Add("Api-Key", MyApiKey);
-            myClient.DefaultRequestHeaders.Add("X-Signature", MyXSignature); // brute force for testing
+            myClient.DefaultRequestHeaders.Add("X-Signature", MyXSignature); 
             myClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
             myClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json; charset=utf-8");
-            //myClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "hotel-api-sdk-net");
 
             // List data response.
             HttpResponseMessage response = myClient.GetAsync(countriesPath).Result;
@@ -64,12 +63,9 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
                 //var dataObjects = response.Content.ReadAsAsync<IEnumerable<DataObject>>().Result;
                 var stringResult = response.Content.ReadAsStringAsync().Result;  
                 responseResults = JsonSerializer.Deserialize<CountriesResponse>(stringResult);
+
                 //saving responses into DB
                 _unitOfWork.Countries.AddRange(responseResults.countries);
-                foreach (var country in responseResults.countries)
-                {
-                    _unitOfWork.States.AddRange(country.states);
-                }
                 _unitOfWork.Complete();
             }
             else
@@ -85,14 +81,6 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             return responseResults;
         }
 
-        public List<State> GetStatesByCountry(string countryCode)
-        {
-            var states = new List<State>();
-
-
-            return states;
-        }
-
         public DestinationsResponse FetchDestinations(string countryCodes)
         {
             var results = new DestinationsResponse();
@@ -100,7 +88,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             myClient.BaseAddress = new Uri(baseLocationURL);
             var MyXSignature = HotelAPIHelpers.GetXSignature(MyApiKey, MySecret);
             myClient.DefaultRequestHeaders.Add("Api-Key", MyApiKey);
-            myClient.DefaultRequestHeaders.Add("X-Signature", MyXSignature); // brute force for testing
+            myClient.DefaultRequestHeaders.Add("X-Signature", MyXSignature); 
             myClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
             myClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json; charset=utf-8");
 
@@ -112,6 +100,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             {
                 var stringResult = response.Content.ReadAsStringAsync().Result;
                 results = JsonSerializer.Deserialize<DestinationsResponse>(stringResult);
+
                 //saving responses into Postgres DB
                 _unitOfWork.Destinations.AddRange(results.destinations);
                 _unitOfWork.Complete();
@@ -125,12 +114,8 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             return results;
         }
 
-        public void ConvertPlaceNametoGeoCoordinates(string placeName)
-        {
 
-        }
-
-        public void GetHotelListings()
+        public void FetchHotelListings()
         {
             /*StatusRS status = client.status();
 

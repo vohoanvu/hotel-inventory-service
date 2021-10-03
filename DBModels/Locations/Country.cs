@@ -13,10 +13,9 @@ namespace ShopifyHotelSourcing.DBModels.Locations
         [Key]
         public string code { get; set; }
         public string isoCode { get; set; }
-        [NotMapped]
         public NameModel description { get; set; }
+        public List<State> states { get; set; }
         // Related entity
-        public virtual List<State> states { get; set; }
         public virtual List<Destination> destinations { get; set; }
     }
 }

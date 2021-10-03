@@ -40,11 +40,11 @@ namespace ShopifyHotelSourcing
             });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddHttpClient<HotelLocationService>(c => c.BaseAddress = new Uri("https://api.test.hotelbeds.com"));
+            services.AddHttpClient<HotelAPIService>(c => c.BaseAddress = new Uri("https://api.test.hotelbeds.com"));
 
             services.AddDbContext<DBContext>(options => options.UseNpgsql(Configuration.GetConnectionString("PostgreSqlConnectionString")), ServiceLifetime.Singleton);
 
-            services.AddScoped<IHotelLocationService, HotelLocationService>();
+            services.AddScoped<IHotelAPIService, HotelAPIService>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICountryRepository, CountryRepository>();

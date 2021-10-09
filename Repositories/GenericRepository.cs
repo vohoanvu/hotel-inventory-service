@@ -21,11 +21,11 @@ namespace ShopifyHotelSourcing.Repositories
 
         public void AddRange(IEnumerable<T> entities) => _context.Set<T>().AddRange(entities);
 
-        public IEnumerable<T> FindByCondition(Expression<Func<T, bool>> expression) => _context.Set<T>().Where(expression).ToList();
+        public async Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> expression) => await _context.Set<T>().Where(expression).ToListAsync();
 
         public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().ToListAsync().ConfigureAwait(true);
 
-        public T GetById(int id) => _context.Set<T>().Find(id);
+        public T GetById(string id) => _context.Set<T>().Find(id);
 
         public void Delete(T entity) => _context.Set<T>().Remove(entity);
 

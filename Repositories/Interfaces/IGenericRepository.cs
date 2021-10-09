@@ -9,10 +9,10 @@ namespace ShopifyHotelSourcing.Repositories.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
-        T GetById(int id);
+        T GetById(string id);
         Task<IEnumerable<T>> GetAllAsync();
 
-        IEnumerable<T> FindByCondition(Expression<Func<T, bool>> expression);
+        Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> expression);
 
         void Add(T entity);
 

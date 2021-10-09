@@ -53,6 +53,8 @@ namespace ShopifyHotelSourcing
             services.AddScoped<IZoneRepository, ZoneRepository>();
             services.AddScoped<IGroupZoneRepository, GroupZoneRepository>();
             services.AddScoped<INameModelRepository, NameModelRepository>();
+
+            services.AddScoped<ITravelLocationSevice, TravelLocationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

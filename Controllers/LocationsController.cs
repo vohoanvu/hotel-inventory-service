@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ShopifyHotelSourcing.Repositories;
 using ShopifyHotelSourcing.Services.HotelBedsService.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,56 +14,66 @@ namespace ShopifyHotelSourcing.Controllers
     [ApiController]
     public class LocationsController : ControllerBase
     {
-        private readonly IHotelAPIService hotelBedService; 
+        private readonly ITravelLocationSevice _travelLocationService;
 
-        public LocationsController(IHotelAPIService hotelBedsService)
+        public LocationsController(ITravelLocationSevice travelLocationService)
         {
-            hotelBedService = hotelBedsService;
+            _travelLocationService = travelLocationService;
         }
-        // GET: api/<LocationsController>/countries
-        [HttpGet("fetch-countries-intoDB")]
+
+
+        // GET: api/<LocationsController>
+        [HttpGet("get-all-countries")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult FetchCountries()
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetCountries()
         {
-            var hotelBedsCountries = hotelBedService.FetchAllCountries();
+            var response = await _travelLocationService.GetAllCountries();
+            if (response == null)
+            {
+                return NotFound(response);
+            }
+            response.Message = $"There are a total of {response.Data.Count} countries";
 
-            return Ok(hotelBedsCountries);
+            return Ok(response);
         }
 
-        // GET api/<LocationsController>/destinations
-        [HttpGet("fetch-destinations-intoDB")]
+        // GET api/<LocationsController>/US
+        [HttpGet("Get-Country-By-Code/{code}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult FetchDestinations(string countryCodes)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetCountryByCode(string code)
         {
-            var hotelBedsDestinations = new DestinationsResponse();
-            try
+            var response = _travelLocationService.GetCountryByCode(code);
+            return response == null ? NotFound(response) : Ok(response);
+        }
+
+        // POST api/<LocationsController>/MX
+        [HttpGet("Get-Destinations-By-Country/{countryCode}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetDestinationsByCountry(string countryCode)
+        {
+            var response = await _travelLocationService.GetDestinationsNamesByCountryCode(countryCode);
+            if (response == null)
             {
-                hotelBedsDestinations = hotelBedService.FetchDestinations(countryCodes);
+                return NotFound(response);
             }
-            catch (Exception)
-            {
-                throw;
-            }
-            
-            return Ok(hotelBedsDestinations);
+            response.Message = $"There are a total of {response.Data.Count} travel destination in this country";
+
+            return Ok(response);
         }
 
-        // POST api/<CountriesController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
 
-        // PUT api/<CountriesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // POST api/<LocationsController>/OAX
+        [HttpGet("Get-Destinations-by-Id/{destinationCode}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetDestinationsByCode(string destinationCode)
         {
-        }
+            var response = _travelLocationService.GetDestinationByCode(destinationCode);
 
-        // DELETE api/<CountriesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return response == null ? NotFound(response) : Ok(response);
         }
     }
 }

@@ -34,7 +34,6 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
                 }
                 return builder.ToString();
             }
-
         }
     }
 }

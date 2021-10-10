@@ -47,12 +47,8 @@ namespace ShopifyHotelSourcing
             services.AddScoped<IHotelAPIService, HotelAPIService>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<ICountryRepository, CountryRepository>();
-            services.AddScoped<IStateRepository, StateRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>(); 
             services.AddScoped<IDestinationRepository, DestinationRepository>();
-            services.AddScoped<IZoneRepository, ZoneRepository>();
-            services.AddScoped<IGroupZoneRepository, GroupZoneRepository>();
-            services.AddScoped<INameModelRepository, NameModelRepository>();
 
             services.AddScoped<ITravelLocationSevice, TravelLocationService>();
         }

@@ -11,6 +11,7 @@ namespace ShopifyHotelSourcing.Repositories.Interfaces
     {
         T GetById(string id);
         Task<IEnumerable<T>> GetAllAsync();
+        IEnumerable<T> GetAllAsNoTracking();
 
         Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> expression);
 
@@ -25,5 +26,6 @@ namespace ShopifyHotelSourcing.Repositories.Interfaces
         void Update(T entity);
 
         Task<IEnumerable<T>> EntitiesWithEagerLoad(string[] children, Expression<Func<T, bool>>? filter);
+
     }
 }

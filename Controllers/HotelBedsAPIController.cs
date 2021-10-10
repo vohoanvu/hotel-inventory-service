@@ -34,12 +34,12 @@ namespace ShopifyHotelSourcing.Controllers
         // GET api/<LocationsController>/destinations
         [HttpGet("fetch-destinations-into-DB")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult FetchDestinations(string countryCodes)
+        public IActionResult FetchDestinations(string countryCodes, int from, int to)
         {
             var hotelBedsDestinations = new DestinationsResponse();
             try
             {
-                hotelBedsDestinations = hotelBedService.FetchDestinations(countryCodes);
+                hotelBedsDestinations = hotelBedService.FetchDestinations(countryCodes, from, to);
             }
             catch (Exception)
             {

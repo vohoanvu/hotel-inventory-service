@@ -25,6 +25,8 @@ namespace ShopifyHotelSourcing.Repositories
 
         public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().ToListAsync().ConfigureAwait(true);
 
+        public IEnumerable<T> GetAllAsNoTracking() => _context.Set<T>().AsNoTracking();
+
         public T GetById(string id) => _context.Set<T>().Find(id);
 
         public void Delete(T entity) => _context.Set<T>().Remove(entity);

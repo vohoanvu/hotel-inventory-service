@@ -17,6 +17,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Diagnostics;
 using ShopifyHotelSourcing.Repositories.Interfaces;
+using System.Text;
 
 namespace ShopifyHotelSourcing.Services.HotelBedsService
 {
@@ -24,7 +25,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
     {
         private const string baseLocationURL = "https://api.test.hotelbeds.com/hotel-content-api/1.0/locations/";
         private string countriesPath = "countries?fields=all&language=ENG&from=1&to=254";
-        private string destinationPath = "destinations?fields=all&countryCodes={countryCodes}&language=ENG&from=1&to=100&useSecondaryLanguage=false";
+        private string destinationPath = "destinations?fields=all&countryCodes={countryCodes}&language=ENG&from={From}&to={To}&useSecondaryLanguage=false";
         //private readonly HotelApiClient client = new HotelApiClient(new HotelApiVersion(HotelApiVersion.versions.V1_2), "83b3b9be38b90a41243e7bc6c41949b1", "6ba38be92a");
         private HttpClient myClient;
         private const string MyApiKey = "83b3b9be38b90a41243e7bc6c41949b1";
@@ -65,7 +66,9 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
                 responseResults = JsonSerializer.Deserialize<CountriesResponse>(stringResult);
 
                 //saving responses into DB
-                _unitOfWork.Countries.AddRange(responseResults.countries);
+                var countriesInDB = _unitOfWork.Countries.GetAllAsNoTracking().ToList();
+                // checking for duplicated country code when adding in bulk
+                _unitOfWork.Countries.AddRange(responseResults.countries.Where(c => !countriesInDB.Any(dbC => dbC.code == c.code)));
                 _unitOfWork.Complete();
             }
             else
@@ -73,15 +76,13 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
                 Debug.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
             }
 
-            // Make any other calls using HttpClient here.
-
             // Dispose once all HttpClient calls are complete. This is not necessary if the containing object will be disposed of; for example in this case the HttpClient instance will be disposed automatically when the application terminates so the following call is superfluous.
-            myClient.Dispose();
+            //myClient.Dispose();
 
             return responseResults;
         }
 
-        public DestinationsResponse FetchDestinations(string countryCodes)
+        public DestinationsResponse FetchDestinations(string countryCodes, int from, int to)
         {
             var results = new DestinationsResponse();
             // prepare for request
@@ -92,7 +93,13 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             myClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
             myClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json; charset=utf-8");
 
-            var newDestinationPath = destinationPath.Replace("{countryCodes}", countryCodes);
+            //Replace destinations endpoints string with user params
+            StringBuilder myStringBuilder = new StringBuilder(destinationPath);
+            myStringBuilder.Replace("{countryCodes}", countryCodes);
+            myStringBuilder.Replace("{From}", from.ToString());
+            myStringBuilder.Replace("{To}", to.ToString());
+
+            var newDestinationPath = myStringBuilder.ToString();
 
             // Making request
             HttpResponseMessage response = myClient.GetAsync(newDestinationPath).Result;
@@ -102,14 +109,17 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
                 results = JsonSerializer.Deserialize<DestinationsResponse>(stringResult);
 
                 //saving responses into Postgres DB
-                _unitOfWork.Destinations.AddRange(results.destinations);
+                var destinationInDB = _unitOfWork.Destinations.GetAllAsNoTracking().ToList();
+                // checking for duplicated destination code when adding in bulk
+                _unitOfWork.Destinations.AddRange(results.destinations.Where(d => !destinationInDB.Any(dbD => dbD.code == d.code)));
                 _unitOfWork.Complete();
             }
             else
             {
                 Debug.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
             }
-            myClient.Dispose();
+            // Dispose once all HttpClient calls are complete. This is not necessary if the containing object will be disposed of; for example in this case the HttpClient instance will be disposed automatically when the application terminates so the following call is superfluous.
+            //myClient.Dispose();
 
             return results;
         }

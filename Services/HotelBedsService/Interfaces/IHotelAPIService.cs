@@ -11,7 +11,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService.Interfaces
     {
         CountriesResponse FetchAllCountries();
 
-        DestinationsResponse FetchDestinations(string countryCodes);
+        DestinationsResponse FetchDestinations(string countryCodes, int from, int to);
 
         void FetchHotelListings();
     }

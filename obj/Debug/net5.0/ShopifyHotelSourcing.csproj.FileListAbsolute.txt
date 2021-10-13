@@ -37,7 +37,6 @@ C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourc
 C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\obj\Debug\net5.0\staticwebassets\ShopifyHotelSourcing.StaticWebAssets.xml
 C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\obj\Debug\net5.0\scopedcss\bundle\ShopifyHotelSourcing.styles.css
 C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\obj\Debug\net5.0\ShopifyHotelSourcing.RazorTargetAssemblyInfo.cache
-C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\obj\Debug\net5.0\ShopifyHotelSourcing.csproj.CopyComplete
 C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\obj\Debug\net5.0\ShopifyHotelSourcing.dll
 C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\obj\Debug\net5.0\ref\ShopifyHotelSourcing.dll
 C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\obj\Debug\net5.0\ShopifyHotelSourcing.pdb

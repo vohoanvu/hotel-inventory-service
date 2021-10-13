@@ -14,5 +14,10 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService.Interfaces
         DestinationsResponse FetchDestinations(string countryCodes, int from, int to);
 
         void FetchHotelListings();
+
+        void SaveCountriesResponseToDB(CountriesResponse countriesResponse);
+
+        void SaveDestinationsResponseToDB(DestinationsResponse destinationsResponse);
+
     }
 }

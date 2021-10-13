@@ -33,6 +33,16 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
 
         private readonly IUnitOfWork _unitOfWork;
 
+        private void PrepareHotelAPIHeaders()
+        {
+            var MyXSignature = HotelAPIHelpers.GetXSignature(MyApiKey, MySecret);
+
+            myClient.DefaultRequestHeaders.Add("Api-Key", MyApiKey);
+            myClient.DefaultRequestHeaders.Add("X-Signature", MyXSignature);
+            myClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
+            myClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json; charset=utf-8");
+        }
+
         public HotelAPIService(HttpClient yourClient, IUnitOfWork unitOfWork)
         {
             myClient = yourClient;
@@ -45,16 +55,8 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             var responseResults = new CountriesResponse();
 
             myClient.BaseAddress = new Uri(baseLocationURL);
-            
-            //calculate X-Signature
-            var MyXSignature = HotelAPIHelpers.GetXSignature(MyApiKey, MySecret);
-            // Add an Accept header for JSON format.
-            //myClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            //myClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-            myClient.DefaultRequestHeaders.Add("Api-Key", MyApiKey);
-            myClient.DefaultRequestHeaders.Add("X-Signature", MyXSignature); 
-            myClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
-            myClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json; charset=utf-8");
+            //Prepare the request Headers, everytime HotelAPIService is instantiated
+            PrepareHotelAPIHeaders();
 
             // List data response.
             HttpResponseMessage response = myClient.GetAsync(countriesPath).Result;
@@ -66,10 +68,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
                 responseResults = JsonSerializer.Deserialize<CountriesResponse>(stringResult);
 
                 //saving responses into DB
-                var countriesInDB = _unitOfWork.Countries.GetAllAsNoTracking().ToList();
-                // checking for duplicated country code when adding in bulk
-                _unitOfWork.Countries.AddRange(responseResults.countries.Where(c => !countriesInDB.Any(dbC => dbC.code == c.code)));
-                _unitOfWork.Complete();
+                SaveCountriesResponseToDB(responseResults);
             }
             else
             {
@@ -87,11 +86,8 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             var results = new DestinationsResponse();
             // prepare for request
             myClient.BaseAddress = new Uri(baseLocationURL);
-            var MyXSignature = HotelAPIHelpers.GetXSignature(MyApiKey, MySecret);
-            myClient.DefaultRequestHeaders.Add("Api-Key", MyApiKey);
-            myClient.DefaultRequestHeaders.Add("X-Signature", MyXSignature); 
-            myClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
-            myClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json; charset=utf-8");
+            //Prepare the request Headers, everytime HotelAPIService is instantiated
+            PrepareHotelAPIHeaders();
 
             //Replace destinations endpoints string with user params
             StringBuilder myStringBuilder = new StringBuilder(destinationPath);
@@ -109,10 +105,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
                 results = JsonSerializer.Deserialize<DestinationsResponse>(stringResult);
 
                 //saving responses into Postgres DB
-                var destinationInDB = _unitOfWork.Destinations.GetAllAsNoTracking().ToList();
-                // checking for duplicated destination code when adding in bulk
-                _unitOfWork.Destinations.AddRange(results.destinations.Where(d => !destinationInDB.Any(dbD => dbD.code == d.code)));
-                _unitOfWork.Complete();
+                SaveDestinationsResponseToDB(results);
             }
             else
             {
@@ -141,6 +134,22 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
                 Console.WriteLine("StatusRS: Is not available.");
                 return;
             }*/
+        }
+
+        public void SaveCountriesResponseToDB(CountriesResponse countriesResponse)
+        {
+            var countriesInDB = _unitOfWork.Countries.GetAllAsNoTracking().ToList();
+            // checking for duplicated country code when adding in bulk
+            _unitOfWork.Countries.AddRange(countriesResponse.countries.Where(c => !countriesInDB.Any(dbC => dbC.code == c.code)));
+            _unitOfWork.Complete();
+        }
+
+        public void SaveDestinationsResponseToDB(DestinationsResponse destinationsResponse)
+        {
+            var destinationInDB = _unitOfWork.Destinations.GetAllAsNoTracking().ToList();
+            // checking for duplicated destination code when adding in bulk
+            _unitOfWork.Destinations.AddRange(destinationsResponse.destinations.Where(d => !destinationInDB.Any(dbD => dbD.code == d.code)));
+            _unitOfWork.Complete();
         }
     }
 }

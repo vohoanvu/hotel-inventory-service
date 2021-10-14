@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShopifyHotelSourcing.DBModels.Hotels
 {
-    public class Hotels
+    public class Hotel
     {
         public int Code { get; set; }
         public NameModel Name { get; set; }

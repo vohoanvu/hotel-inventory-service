@@ -65,13 +65,23 @@ namespace ShopifyHotelSourcing.Controllers
         }
 
 
-        // POST api/<LocationsController>/OAX
         [HttpGet("Get-Destinations-by-Id/{destinationCode}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetDestinationsByCode(string destinationCode)
         {
             var response = _travelLocationService.GetDestinationByCode(destinationCode);
+
+            return response == null ? NotFound(response) : Ok(response);
+        }
+
+
+        [HttpGet("search-destination-by-name/{searchFilter}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult SearchDestinationByName(string searchFilter)
+        {
+            var response = _travelLocationService.SearchDestinationsByName(searchFilter);
 
             return response == null ? NotFound(response) : Ok(response);
         }

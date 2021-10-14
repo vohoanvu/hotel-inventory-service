@@ -40,11 +40,11 @@ namespace ShopifyHotelSourcing
             });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddHttpClient<HotelAPIService>(c => c.BaseAddress = new Uri("https://api.test.hotelbeds.com"));
+            services.AddHttpClient<HotelApiContentService>(c => c.BaseAddress = new Uri("https://api.test.hotelbeds.com"));
 
             services.AddDbContext<DBContext>(options => options.UseNpgsql(Configuration.GetConnectionString("PostgreSqlConnectionString")), ServiceLifetime.Singleton);
 
-            services.AddScoped<IHotelAPIService, HotelAPIService>(); 
+            services.AddScoped<IHotelApiContentService, HotelApiContentService>(); 
             services.AddSingleton<IUnitOfWork, UnitOfWork>();// change from Scoped to Singleton, to fix the re-usage of an already dispose context instance
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<ICountryRepository, CountryRepository>(); 

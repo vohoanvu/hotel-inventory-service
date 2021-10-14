@@ -97,5 +97,49 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
 
             return serviceResponse;
         }
+
+
+        public ServiceResponse<List<DestinationVM>> SearchDestinationsByName(string destinationKeyword)
+        {
+            var result = new ServiceResponse<List<DestinationVM>>();
+
+            try
+            {
+                var destinationsInDB = _unitOfWork.Destinations.GetAllAsNoTracking().ToList();
+                //(d => CheckforNameMatches(d, destinationKeyword))
+                result.Data = destinationsInDB.Where(d => CheckforNameMatches(d, destinationKeyword))
+                                                .Select(d => new DestinationVM
+                                                                {
+                                                                    destinationCode = d.code,
+                                                                    destinationName = d.name.content,
+                                                                    countryCode = d.countryCode
+                                                                }).ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+        // should be placed inside Helper folder
+        public bool CheckforNameMatches(Destination destination, string keyword)
+        {
+            var loweredSearch = keyword.ToLower();
+            if (destination.name.content.ToLower().Contains(loweredSearch))
+                return true;
+            else
+            {
+                var zonesMatched = destination.zones.Where(z => z.name.ToLower().Contains(loweredSearch));
+                if (zonesMatched.Any() && zonesMatched != null)
+                    return true;
+                else
+                {
+                    var groupZonesMatched = destination.groupZones.Where(gz => gz.name.content.ToLower().Contains(loweredSearch));
+                    return (groupZonesMatched.Any() && groupZonesMatched != null);
+                }
+            }
+        }
     }
 }

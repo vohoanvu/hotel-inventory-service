@@ -1,6 +1,7 @@
 ﻿using com.hotelbeds.distribution.hotel_api_model.auto.messages;
 using com.hotelbeds.distribution.hotel_api_sdk_core;
 using com.hotelbeds.distribution.hotel_api_sdk_core.types;
+using com.hotelbeds.distribution.hotel_api_sdk_core.helpers;
 using ShopifyHotelSourcing.DBModels.Locations;
 using ShopifyHotelSourcing.Services.HotelBedsService.Interfaces;
 using System;
@@ -21,7 +22,7 @@ using System.Text;
 
 namespace ShopifyHotelSourcing.Services.HotelBedsService
 {
-    public class HotelAPIService : IHotelAPIService
+    public class HotelApiContentService : IHotelApiContentService
     {
         private const string baseLocationURL = "https://api.test.hotelbeds.com/hotel-content-api/1.0/locations/";
         private string countriesPath = "countries?fields=all&language=ENG&from=1&to=254";
@@ -43,7 +44,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
             myClient.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "application/json; charset=utf-8");
         }
 
-        public HotelAPIService(HttpClient yourClient, IUnitOfWork unitOfWork)
+        public HotelApiContentService(HttpClient yourClient, IUnitOfWork unitOfWork)
         {
             myClient = yourClient;
             //myClient = new HttpClient(new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip });
@@ -118,22 +119,58 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
         }
 
 
-        public void FetchHotelListings()
+        public List<string> CheckAvailability()
         {
-            /*StatusRS status = client.status();
+            var responseResult = new List<string>();
+            //var configApiKey = WebConfigurationManager.AppSettings["ApiKey"];
+
+            var client = new HotelApiClient();
+            var status = client.status();
 
             if (status != null && status.error == null)
-                Console.WriteLine("StatusRS: " + status.status);
+                responseResult.Add("StatusRS: " + status.status);
             else if (status != null && status.error != null)
             {
-                Console.WriteLine("StatusRS: " + status.status + " " + status.error.code + ": " + status.error.message);
-                return;
+                responseResult.Add("StatusRS: " + status.status + " " + status.error.code + ": " + status.error.message);
+                return responseResult;
             }
             else if (status == null)
             {
-                Console.WriteLine("StatusRS: Is not available.");
-                return;
-            }*/
+                responseResult.Add("StatusRS: Is not available.");
+                return responseResult;
+            }
+
+            Availability avail = new Availability();
+            avail.checkIn = DateTime.Now.AddDays(10);
+            avail.checkOut = DateTime.Now.AddDays(13);
+            /*avail.withinThis = new Availability.Circle()
+            {
+                latitude = 13.752474,
+                longitude = 100.4657878,
+                radiusInKilometers = 50
+            };*/
+            avail.destination = "PMI";
+            avail.zone = 90;
+            AvailRoom room = new AvailRoom();
+            room.adults = 1;
+            room.details = new List<RoomDetail>();
+            room.adultOf(30);
+            room.numberOfRooms = 1;
+            avail.rooms.Add(room);
+
+            AvailabilityRQ availabilityRQ = avail.toAvailabilityRQ();
+            if (availabilityRQ == null)
+                throw new Exception("Availability RQ can't be null", new ArgumentNullException());
+
+            AvailabilityRS responseAvail = client.doAvailability(availabilityRQ);
+
+            if (responseAvail != null && responseAvail.hotels != null && responseAvail.hotels.hotels != null && responseAvail.hotels.hotels.Count > 0)
+            {
+                foreach (var hotel in responseAvail.hotels.hotels)
+                    responseResult.Add(String.Format("Hotel Name: {0} Category Name: {1} Destination: {2} Rooms: {3}", hotel.name, hotel.categoryName, hotel.destinationName, hotel.rooms.Count));
+            }
+
+            return responseResult;
         }
 
         public void SaveCountriesResponseToDB(CountriesResponse countriesResponse)

@@ -4,16 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using com.hotelbeds.distribution.hotel_api_sdk_core;
 
 namespace ShopifyHotelSourcing.Services.HotelBedsService.Interfaces
 {
-    public interface IHotelAPIService
+    public interface IHotelApiContentService
     {
         CountriesResponse FetchAllCountries();
 
         DestinationsResponse FetchDestinations(string countryCodes, int from, int to);
 
-        void FetchHotelListings();
+        List<string> CheckAvailability();
 
         void SaveCountriesResponseToDB(CountriesResponse countriesResponse);
 

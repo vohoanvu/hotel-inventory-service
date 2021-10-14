@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using com.hotelbeds.distribution.hotel_api_model.auto.model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopifyHotelSourcing.Repositories;
 using ShopifyHotelSourcing.Services.HotelBedsService.Interfaces;
@@ -15,9 +16,9 @@ namespace ShopifyHotelSourcing.Controllers
     [ApiController]
     public class HotelBedsAPIController : ControllerBase
     {
-        private readonly IHotelAPIService hotelBedService; 
+        private readonly IHotelApiContentService hotelBedService; 
 
-        public HotelBedsAPIController(IHotelAPIService hotelBedsService)
+        public HotelBedsAPIController(IHotelApiContentService hotelBedsService)
         {
             hotelBedService = hotelBedsService;
         }
@@ -49,14 +50,19 @@ namespace ShopifyHotelSourcing.Controllers
             return Ok(hotelBedsDestinations);
         }
 
-        // POST api/<CountriesController>
-        /*[HttpPost]
-        public void Post([FromBody] string value)
+        // Fetch Hotel Availability Sample in Console
+        [HttpGet("availability-sample-check")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetAvalability()
         {
+            var resultResponse = new List<string>();
+            resultResponse = hotelBedService.CheckAvailability();
+
+            return Ok(resultResponse);
         }
 
         // PUT api/<CountriesController>/5
-        [HttpPut("{id}")]
+        /*[HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }

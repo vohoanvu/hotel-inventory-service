@@ -14,6 +14,8 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService.Interfaces
         Task<ServiceResponse<List<DestinationVM>>> GetDestinationsNamesByCountryCode(string countryCode);
         ServiceResponse<Destination> GetDestinationByCode(string destinationCode);
         Task<ServiceResponse<List<Destination>>> GetAllDestinations();
+
+        ServiceResponse<List<DestinationVM>> SearchDestinationsByName(string destinationKeyword);
         //List<Hotel> GetHotelListingsByCountryState(string countryCode, string stateCode);
     }
 }

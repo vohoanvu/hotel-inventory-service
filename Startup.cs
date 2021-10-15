@@ -51,6 +51,7 @@ namespace ShopifyHotelSourcing
             services.AddScoped<IDestinationRepository, DestinationRepository>();
 
             services.AddScoped<ITravelLocationSevice, TravelLocationService>();
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

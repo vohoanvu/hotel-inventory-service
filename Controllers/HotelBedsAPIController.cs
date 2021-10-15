@@ -1,7 +1,7 @@
 ﻿using com.hotelbeds.distribution.hotel_api_model.auto.model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ShopifyHotelSourcing.Repositories;
+using ShopifyHotelSourcing.APIHotelResponseModel;
 using ShopifyHotelSourcing.Services.HotelBedsService.Interfaces;
 using System;
 using System.Collections.Generic;

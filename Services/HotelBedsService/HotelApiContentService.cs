@@ -19,6 +19,7 @@ using System.Text.Json.Serialization;
 using System.Diagnostics;
 using ShopifyHotelSourcing.Repositories.Interfaces;
 using System.Text;
+using ShopifyHotelSourcing.APIHotelResponseModel;
 
 namespace ShopifyHotelSourcing.Services.HotelBedsService
 {

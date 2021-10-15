@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using AutoMapper;
 using ShopifyHotelSourcing.DBModels.Locations;
 using ShopifyHotelSourcing.Repositories.Interfaces;
 using ShopifyHotelSourcing.Services.HotelBedsService.Interfaces;
@@ -13,10 +14,12 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
     public class TravelLocationService : ITravelLocationSevice
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public TravelLocationService(IUnitOfWork unitOfWork)
+        public TravelLocationService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<ServiceResponse<List<Country>>> GetAllCountries()
@@ -82,12 +85,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
 
             if (destinations != null)
             {
-                serviceResponse.Data = destinations.Select(d => new DestinationVM
-                                                                    {
-                                                                       destinationCode = d.code,
-                                                                       destinationName = d.name.content,
-                                                                       countryCode = d.countryCode
-                                                                    }).ToList();
+                serviceResponse.Data = destinations.Select(d => _mapper.Map<DestinationVM>(d) ).ToList();
             } 
             else
             {
@@ -108,12 +106,7 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService
                 var destinationsInDB = _unitOfWork.Destinations.GetAllAsNoTracking().ToList();
                 //(d => CheckforNameMatches(d, destinationKeyword))
                 result.Data = destinationsInDB.Where(d => CheckforNameMatches(d, destinationKeyword))
-                                                .Select(d => new DestinationVM
-                                                                {
-                                                                    destinationCode = d.code,
-                                                                    destinationName = d.name.content,
-                                                                    countryCode = d.countryCode
-                                                                }).ToList();
+                                                .Select(d => _mapper.Map<DestinationVM>(d) ).ToList();
             }
             catch (Exception)
             {

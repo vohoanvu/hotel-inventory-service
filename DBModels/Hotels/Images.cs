@@ -1,4 +1,5 @@
-﻿using ShopifyHotelSourcing.DBModels.Types;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopifyHotelSourcing.DBModels.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace ShopifyHotelSourcing.DBModels.Hotels
 {
+    [Owned]
     public class Images
     {
-        public int Id { get; set; }
         public string ImageTypeCode { get; set; }
         public string Path { get; set; }
         public string RoomCode { get; set; }

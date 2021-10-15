@@ -22,7 +22,7 @@ namespace ShopifyHotelSourcing.Repositories
 
         public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<Destination> Destinations { get; set; }
-
+        public virtual DbSet<Hotel> Hotels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -71,23 +71,86 @@ namespace ShopifyHotelSourcing.Repositories
                     gz.OwnsOne(gz => gz.name);
                     gz.ToTable("GroupZone");
                 });
-            // Configure zone and groupZone with the purpose of practicing DB Design...
-            /*modelBuilder.Entity<Zone>()
-                .HasOne(z => z.Destination)
-                .WithMany(d => d.zones)
-                .HasForeignKey(z => z.DestinationCode);
 
-            modelBuilder.Entity<GroupZone>()
-                .HasOne(gz => gz.Destination)
-                .WithMany(d => d.groupZones)
-                .HasForeignKey(gz => gz.DestinationCode);
 
-            modelBuilder.Entity<Zone>()
-                .HasOne(z => z.GroupZone)
-                .WithMany(gz => gz.ZonesList)
-                .HasForeignKey(z => z.GroupZoneID);
+            modelBuilder.Entity<Hotel>().OwnsOne(h => h.Name);
+            modelBuilder.Entity<Hotel>().OwnsOne(h => h.Description);
+            modelBuilder.Entity<Hotel>().OwnsOne(h => h.Coordinates);
+            modelBuilder.Entity<Hotel>().OwnsOne(h => h.City);
 
-            modelBuilder.Entity<NameModel>().HasNoKey();*/
+            modelBuilder.Entity<Hotel>().OwnsMany(
+                h => h.Address,
+                a =>
+                {
+                    a.WithOwner().HasForeignKey("OwnerId");
+                    a.Property<int>("AddressId");
+                    a.HasKey("AddressId");
+                });
+
+            modelBuilder.Entity<Hotel>().OwnsMany(
+                h => h.Phones,
+                p =>
+                {
+                    p.WithOwner().HasForeignKey("OwnerId");
+                    p.Property<int>("phoneId");
+                    p.HasKey("phoneId");
+                });
+
+            modelBuilder.Entity<Hotel>().OwnsMany(
+                h => h.Rooms,
+                r =>
+                {
+                    r.WithOwner().HasForeignKey("OwnerId");
+                    r.Property<int>("roomId");
+                    r.HasKey("roomId");
+                    r.OwnsMany(r => r.RoomStays);
+                    r.OwnsMany(r => r.RoomFacilities);
+                });
+
+            modelBuilder.Entity<Hotel>().OwnsMany(
+                h => h.Facilities,
+                f =>
+                {
+                    f.WithOwner().HasForeignKey("OwnerId");
+                    f.Property<int>("facilityId");
+                    f.HasKey("facilityId");
+                });
+            modelBuilder.Entity<Hotel>().OwnsMany(
+                h => h.Terminals,
+                t =>
+                {
+                    t.WithOwner().HasForeignKey("OwnerId");
+                    t.Property<int>("distanceId");
+                    t.HasKey("distanceId");
+                });
+            modelBuilder.Entity<Hotel>().OwnsMany(
+                h => h.Issues,
+                i =>
+                {
+                    i.WithOwner().HasForeignKey("OwnerId");
+                    i.Property<int>("issueId");
+                    i.HasKey("issueId");
+                    i.OwnsOne(i => i.Name);
+                    i.OwnsOne(i => i.Description);
+                });
+            modelBuilder.Entity<Hotel>().OwnsMany(
+                h => h.Images,
+                i =>
+                {
+                    i.WithOwner().HasForeignKey("OwnerId");
+                    i.Property<int>("imageId");
+                    i.HasKey("imageId");
+                    i.OwnsOne(i => i.Description);
+                });
+            modelBuilder.Entity<Hotel>().OwnsMany(
+                h => h.WildCards,
+                w =>
+                {
+                    w.WithOwner().HasForeignKey("OwnerId");
+                    w.Property<int>("wildcardId");
+                    w.HasKey("wildcardId");
+                    w.OwnsOne(w => w.HotelRoomDescription);
+                });
         }
     }
 }

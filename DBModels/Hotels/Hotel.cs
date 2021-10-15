@@ -1,6 +1,7 @@
 ﻿using ShopifyHotelSourcing.DBModels.Types;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ namespace ShopifyHotelSourcing.DBModels.Hotels
 {
     public class Hotel
     {
+        [Key]
         public int Code { get; set; }
         public NameModel Name { get; set; }
         public NameModel Description { get; set; }

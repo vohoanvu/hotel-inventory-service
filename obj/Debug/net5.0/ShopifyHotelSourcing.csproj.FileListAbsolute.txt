@@ -45,3 +45,5 @@ C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourc
 C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\obj\Debug\net5.0\ShopifyHotelSourcing.csproj.AssemblyReference.cache
 C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\bin\Debug\net5.0\ShopifyHotelSourcing.dll.config
 C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\bin\Debug\net5.0\App.config
+C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\bin\Debug\net5.0\AutoMapper.dll
+C:\Users\VuVoHoang\VuDirectory\OneCentricity\InventorySourcing\ShopifyHotelSourcing\bin\Debug\net5.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

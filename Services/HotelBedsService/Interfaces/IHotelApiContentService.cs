@@ -1,10 +1,10 @@
-﻿using ShopifyHotelSourcing.DBModels.Locations;
-using ShopifyHotelSourcing.Repositories;
+﻿using ShopifyHotelSourcing.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using com.hotelbeds.distribution.hotel_api_sdk_core;
+using ShopifyHotelSourcing.APIHotelResponseModel;
 
 namespace ShopifyHotelSourcing.Services.HotelBedsService.Interfaces
 {

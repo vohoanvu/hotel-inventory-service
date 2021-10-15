@@ -11,11 +11,12 @@ namespace ShopifyHotelSourcing.Services.HotelBedsService.Interfaces
     {
         Task<ServiceResponse<List<Country>>> GetAllCountries();
         ServiceResponse<Country> GetCountryByCode(string countryCode);
-        Task<ServiceResponse<List<DestinationVM>>> GetDestinationsNamesByCountryCode(string countryCode);
+
         ServiceResponse<Destination> GetDestinationByCode(string destinationCode);
         Task<ServiceResponse<List<Destination>>> GetAllDestinations();
-
+        Task<ServiceResponse<List<DestinationVM>>> GetDestinationsNamesByCountryCode(string countryCode);
         ServiceResponse<List<DestinationVM>> SearchDestinationsByName(string destinationKeyword);
+        //ServiceResponse<List<DestinationVM>> SearchDestinatinosByNameAndCountry(string countryCode, string destinationKeyword);
         //List<Hotel> GetHotelListingsByCountryState(string countryCode, string stateCode);
     }
 }
